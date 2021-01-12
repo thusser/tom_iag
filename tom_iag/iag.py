@@ -449,6 +449,14 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
             ),
         )
 
+    def filter_choices(self):
+        return sorted(set([
+            (f['code'], f['name']) for f in self._instrument['optical_elements'].get('filters', [])]),
+            key=lambda filter_tuple: filter_tuple[1])
+
+    def readout_choices(self):
+        return sorted([(f['code'], f['name']) for f in self._instrument['modes']['readout']['modes']])
+
 
 class MonetSouthImagingObservationForm(IAGImagingObservationForm):
     INSTRUMENT = '1M2 FLI230'
@@ -459,11 +467,6 @@ class MonetSouthImagingObservationForm(IAGImagingObservationForm):
 
     def instrument_choices(self):
         return [(MonetSouthImagingObservationForm.INSTRUMENT, self._instrument['name'])]
-
-    def filter_choices(self):
-        return sorted(set([
-            (f['code'], f['name']) for f in self._instrument['optical_elements'].get('filters', [])]),
-            key=lambda filter_tuple: filter_tuple[1])
 
 
 class MonetNorthImagingObservationForm(IAGImagingObservationForm):
@@ -476,11 +479,6 @@ class MonetNorthImagingObservationForm(IAGImagingObservationForm):
     def instrument_choices(self):
         return [(MonetNorthImagingObservationForm.INSTRUMENT, self._instrument['name'])]
 
-    def filter_choices(self):
-        return sorted(set([
-            (f['code'], f['name']) for f in self._instrument['optical_elements'].get('filters', [])]),
-            key=lambda filter_tuple: filter_tuple[1])
-
 
 class IAG50ImagingObservationForm(IAGImagingObservationForm):
     INSTRUMENT = '0M5 SBIG6303E'
@@ -491,11 +489,6 @@ class IAG50ImagingObservationForm(IAGImagingObservationForm):
 
     def instrument_choices(self):
         return [(IAG50ImagingObservationForm.INSTRUMENT, self._instrument['name'])]
-
-    def filter_choices(self):
-        return sorted(set([
-            (f['code'], f['name']) for f in self._instrument['optical_elements'].get('filters', [])]),
-            key=lambda filter_tuple: filter_tuple[1])
 
 
 class IAGFacility(BaseRoboticObservationFacility):
