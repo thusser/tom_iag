@@ -112,7 +112,7 @@ class IAGBaseObservationForm(BaseRoboticObservationForm, IAGBaseForm):
     IAG uses the LCO observation portal, so the used API is identical.
     """
     name = forms.CharField()
-    ipp_value = forms.FloatField(label='Intra Proposal Priority (IPP factor)',
+    ipp_value = forms.FloatField(label='IPP factor',
                                  min_value=0.5,
                                  max_value=2,
                                  initial=1.05,
