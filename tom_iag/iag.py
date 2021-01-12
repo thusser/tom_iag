@@ -139,11 +139,55 @@ class IAGBaseObservationForm(BaseRoboticObservationForm, IAGBaseForm):
         return Div(
             Div(
                 Div(
-                    'name', 'proposal', 'ipp_value', 'observation_mode', 'start', 'end',
+                    'name',
                     css_class='col'
                 ),
                 Div(
-                    'filter', 'instrument_type', 'exposure_count', 'exposure_time', 'max_airmass', 'min_lunar_distance',
+                    'proposal',
+                    css_class='col'
+                ),
+                css_class='form-row',
+            ),
+            Div(
+                Div(
+                    'ipp_value',
+                    css_class='col'
+                ),
+                Div(
+                    'observation_mode',
+                    css_class='col'
+                ),
+                css_class='form-row',
+            ),
+            Div(
+                Div(
+                    'instrument_type',
+                    css_class='col'
+                ),
+                Div(
+                    'filter',
+                    css_class='col'
+                ),
+                css_class='form-row',
+            ),
+            Div(
+                Div(
+                    'exposure_count',
+                    css_class='col'
+                ),
+                Div(
+                    'exposure_time',
+                    css_class='col'
+                ),
+                css_class='form-row',
+            ),
+            Div(
+                Div(
+                    'max_airmass',
+                    css_class='col'
+                ),
+                Div(
+                    'min_lunar_distance',
                     css_class='col'
                 ),
                 css_class='form-row',
@@ -321,11 +365,51 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
         return Div(
             Div(
                 Div(
-                    'name', 'proposal', 'ipp_value', 'observation_mode',
+                    'name',
                     css_class='col'
                 ),
                 Div(
-                    'filter', 'instrument_type', 'readout_mode', 'exposure_count', 'exposure_time',
+                    'proposal',
+                    css_class='col'
+                ),
+                css_class='form-row',
+            ),
+            Div(
+                Div(
+                    'observation_mode',
+                    css_class='col'
+                ),
+                Div(
+                    'ipp_value',
+                    css_class='col'
+                ),
+                css_class='form-row',
+            ),
+            Div(
+                Div(
+                    'instrument_type',
+                    css_class='col'
+                ),
+                css_class='form-row',
+            ),
+            Div(
+                Div(
+                    'exposure_count',
+                    css_class='col'
+                ),
+                Div(
+                    'exposure_time',
+                    css_class='col'
+                ),
+                css_class='form-row',
+            ),
+            Div(
+                Div(
+                    'readout_mode',
+                    css_class='col'
+                ),
+                Div(
+                    'filter',
                     css_class='col'
                 ),
                 css_class='form-row',
