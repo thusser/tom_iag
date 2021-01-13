@@ -60,7 +60,7 @@ class IAGBaseForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['proposal'] = forms.ChoiceField(choices=self.proposal_choices())
         self.fields['filter'] = forms.ChoiceField(choices=self.filter_choices())
-        self.fields['instrument_type'] = forms.ChoiceField(choices=self.instrument_choices())
+        self.fields['instrument_type'] = forms.ChoiceField(choices=self.instrument_choices(), label='Instrument')
 
     def _get_instruments(self):
         cached_instruments = cache.get('monet_instruments')
