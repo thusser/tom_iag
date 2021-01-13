@@ -337,8 +337,7 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
     acquisition = forms.ChoiceField(choices=(('ON', 'On'), ('OFF', 'Off')), required=True, initial='ON')
     guiding = forms.ChoiceField(choices=(('ON', 'On'), ('OFF', 'Off')), required=True, initial='OFF')
 
-    def __init__(self, instrument: str = None, *args, **kwargs):
-        self._init_instrument = self._get_instruments()[instrument]
+    def __init__(self, *args, **kwargs):
         IAGBaseObservationForm.__init__(self, *args, **kwargs)
 
     @property
@@ -347,8 +346,7 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
         if 'instrument' in self.initial:
             i = self._get_instruments()
             return i[self.initial['instrument']] if self.initial['instrument'] in i else None
-        # given in c'tor?
-        return self._init_instrument
+        return None
 
     def instrument_choices(self):
         # get instruments
