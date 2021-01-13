@@ -343,9 +343,9 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
     @property
     def _instrument(self):
         # in initials?
-        if 'instrument' in self.initial:
+        if 'instrument_type' in self.initial:
             i = self._get_instruments()
-            return i[self.initial['instrument']] if self.initial['instrument'] in i else None
+            return i[self.initial['instrument_type']] if self.initial['instrument_type'] in i else None
         return None
 
     def instrument_choices(self):
@@ -355,7 +355,7 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
         if 'instrument' in self.initial:
             # given instrument
             if self.initial['instrument'] in instruments:
-                return [(self.initial['instrument'], instruments[self.initial['instrument']]['name'])]
+                return [(self.initial['instrument_type'], instruments[self.initial['instrument_type']]['name'])]
             else:
                 return []
         else:
