@@ -337,9 +337,27 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
     acquisition = forms.ChoiceField(choices=(('ON', 'On'), ('OFF', 'Off')), required=True, initial='ON')
     guiding = forms.ChoiceField(choices=(('ON', 'On'), ('OFF', 'Off')), required=True, initial='OFF')
 
+    @property
+    def _instrument(self):
+        if 'instrument' in self.initial:
+            i = self._get_instruments()
+            return i[self.initial['instrument']] if self.initial['instrument'] in i else None
+        return None
+
     def instrument_choices(self):
-        return sorted([(k, v['name']) for k, v in self._get_instruments().items() if 'IMAGE' in v['type']],
-                      key=lambda inst: inst[1])
+        # get instruments
+        instruments = self._get_instruments()
+
+        if 'instrument' in self.initial:
+            # given instrument
+            if self.initial['instrument'] in instruments:
+                return [(self.initial['instrument'], instruments[self.initial['instrument']]['name'])]
+            else:
+                return []
+        else:
+            # return all
+            return sorted([(k, v['name']) for k, v in self._get_instruments().items() if 'IMAGE' in v['type']],
+                          key=lambda inst: inst[1])
 
     def filter_choices(self):
         return sorted(set([
