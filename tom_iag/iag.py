@@ -548,8 +548,6 @@ class IAGFacility(BaseRoboticObservationFacility):
 
     def get_form(self, observation_type):
         try:
-            print(observation_type)
-            print(self.observation_forms)
             return self.observation_forms[observation_type]
         except KeyError:
             return IAGBaseObservationForm
