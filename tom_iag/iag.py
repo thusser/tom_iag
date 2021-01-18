@@ -50,6 +50,21 @@ def make_request(*args, **kwargs):
     return response
 
 
+def get_instruments():
+    cached_instruments = cache.get('monet_instruments')
+
+    if not cached_instruments:
+        response = make_request(
+            'GET',
+            PORTAL_URL + '/api/instruments/',
+            headers={'Authorization': 'Token {0}'.format(SETTINGS['api_key'])}
+        )
+        cached_instruments = {k: v for k, v in response.json().items() if 'SOAR' not in k}
+        cache.set('monet_instruments', cached_instruments)
+
+    return cached_instruments
+
+
 class IAGBaseForm(forms.Form):
     ipp_value = forms.FloatField()
     exposure_count = forms.IntegerField(min_value=1)
@@ -62,32 +77,18 @@ class IAGBaseForm(forms.Form):
         self.fields['filter'] = forms.ChoiceField(choices=self.filter_choices())
         self.fields['instrument_type'] = forms.ChoiceField(choices=self.instrument_choices(), label='Instrument')
 
-    def _get_instruments(self):
-        cached_instruments = cache.get('monet_instruments')
-
-        if not cached_instruments:
-            response = make_request(
-                'GET',
-                PORTAL_URL + '/api/instruments/',
-                headers={'Authorization': 'Token {0}'.format(SETTINGS['api_key'])}
-            )
-            cached_instruments = {k: v for k, v in response.json().items() if 'SOAR' not in k}
-            cache.set('monet_instruments', cached_instruments)
-
-        return cached_instruments
-
     def instrument_choices(self):
-        return sorted([(k, v['name']) for k, v in self._get_instruments().items()], key=lambda inst: inst[1])
+        return sorted([(k, v['name']) for k, v in get_instruments().items()], key=lambda inst: inst[1])
 
     def filter_choices(self):
         return sorted(set([
-            (f['code'], f['name']) for ins in self._get_instruments().values() for f in
+            (f['code'], f['name']) for ins in get_instruments().values() for f in
             ins['optical_elements'].get('filters', []) + ins['optical_elements'].get('slits', [])
             ]), key=lambda filter_tuple: filter_tuple[1])
 
     def readout_choices(self):
         return sorted([(f['code'], f['name'])
-                       for ins in self._get_instruments().values() for f in ins['modes']['readout']['modes']])
+                       for ins in get_instruments().values() for f in ins['modes']['readout']['modes']])
 
     def proposal_choices(self):
         response = make_request(
@@ -307,7 +308,7 @@ class IAGBaseObservationForm(BaseRoboticObservationForm, IAGBaseForm):
         }
 
     def _build_location(self):
-        return {'telescope_class': self._get_instruments()[self.cleaned_data['instrument_type']]['class']}
+        return {'telescope_class': get_instruments()[self.cleaned_data['instrument_type']]['class']}
 
     def observation_payload(self):
         payload = {
@@ -344,13 +345,13 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
     def _instrument(self):
         # in initials?
         if 'instrument_type' in self.initial:
-            i = self._get_instruments()
+            i = get_instruments()
             return i[self.initial['instrument_type']] if self.initial['instrument_type'] in i else None
         return None
 
     def instrument_choices(self):
         # get instruments
-        instruments = self._get_instruments()
+        instruments = get_instruments()
 
         if 'instrument' in self.initial:
             # given instrument
@@ -360,12 +361,12 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
                 return []
         else:
             # return all
-            return sorted([(k, v['name']) for k, v in self._get_instruments().items() if 'IMAGE' in v['type']],
+            return sorted([(k, v['name']) for k, v in get_instruments().items() if 'IMAGE' in v['type']],
                           key=lambda inst: inst[1])
 
     def filter_choices(self):
         return sorted(set([
-            (f['code'], f['name']) for ins in self._get_instruments().values() for f in
+            (f['code'], f['name']) for ins in get_instruments().values() for f in
             ins['optical_elements'].get('filters', [])
             ]), key=lambda filter_tuple: filter_tuple[1])
 
@@ -485,7 +486,7 @@ class MonetSouthImagingObservationForm(IAGImagingObservationForm):
 
     @property
     def _instrument(self):
-        return self._get_instruments()[MonetSouthImagingObservationForm.INSTRUMENT]
+        return get_instruments()[MonetSouthImagingObservationForm.INSTRUMENT]
 
     def instrument_choices(self):
         return [(MonetSouthImagingObservationForm.INSTRUMENT, self._instrument['name'])]
@@ -496,7 +497,7 @@ class MonetNorthImagingObservationForm(IAGImagingObservationForm):
 
     @property
     def _instrument(self):
-        return self._get_instruments()[MonetNorthImagingObservationForm.INSTRUMENT]
+        return get_instruments()[MonetNorthImagingObservationForm.INSTRUMENT]
 
     def instrument_choices(self):
         return [(MonetNorthImagingObservationForm.INSTRUMENT, self._instrument['name'])]
@@ -507,7 +508,7 @@ class IAG50ImagingObservationForm(IAGImagingObservationForm):
 
     @property
     def _instrument(self):
-        return self._get_instruments()[IAG50ImagingObservationForm.INSTRUMENT]
+        return get_instruments()[IAG50ImagingObservationForm.INSTRUMENT]
 
     def instrument_choices(self):
         return [(IAG50ImagingObservationForm.INSTRUMENT, self._instrument['name'])]
