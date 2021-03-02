@@ -673,7 +673,7 @@ class IAGFacility(BaseRoboticObservationFacility):
                 'filename': frame['basename'] + '.fits.gz',
                 'created': parse(frame['DATE_OBS']),
                 'url': urljoin(ARCHIVE_URL, frame['url']),
-                'imagetype': frame['IMAGETYP'],
+                'imagetype': frame['OBSTYPE'],
                 'rlevel': frame['RLEVEL']
             })
         return products
