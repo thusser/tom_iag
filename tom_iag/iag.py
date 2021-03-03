@@ -667,7 +667,7 @@ class IAGFacility(BaseRoboticObservationFacility):
 
     def data_products(self, observation_id, product_id=None):
         products = []
-        for frame in self._archive_frames(observation_id, product_id):
+        for frame in self.archive_frames(observation_id, product_id):
             products.append({
                 'id': frame['id'],
                 'filename': frame['basename'] + '.fits.gz',
@@ -687,24 +687,24 @@ class IAGFacility(BaseRoboticObservationFacility):
         else:
             return {}
 
-    def _archive_headers(self):
+    def archive_headers(self):
         return self._portal_headers()
 
-    def _archive_frames(self, observation_id, product_id=None):
+    def archive_frames(self, observation_id, product_id=None):
         # todo save this key somewhere
         frames = []
         if product_id:
             response = make_request(
                 'GET',
                 ARCHIVE_URL + '/frames/{0}/'.format(product_id),
-                headers=self._archive_headers()
+                headers=self.archive_headers()
             )
             frames = [response.json()]
         else:
             response = make_request(
                 'GET',
                 ARCHIVE_URL + '/frames/?REQNUM={0}'.format(observation_id),
-                headers=self._archive_headers()
+                headers=self.archive_headers()
             )
             frames = response.json()['results']
 
