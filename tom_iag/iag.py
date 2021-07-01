@@ -700,12 +700,28 @@ class IAGFacility(BaseRoboticObservationFacility):
                 headers=self.archive_headers()
             )
             frames = [response.json()]
+
         else:
-            response = make_request(
-                'GET',
-                ARCHIVE_URL + '/frames/?REQNUM={0}'.format(observation_id),
-                headers=self.archive_headers()
-            )
-            frames = response.json()['results']
+            # probably need to make multiple requests
+            self._list_archive_frames(frames, observation_id)
 
         return frames
+
+    def _list_archive_frames(self, frames, observation_id, offset=0, limit=500):
+        # do request
+        response = make_request(
+            'GET',
+            ARCHIVE_URL + '/frames/',
+            params={'REQNUM': observation_id, 'offset': offset, 'limit': limit},
+            headers=self.archive_headers()
+        )
+
+        # get response
+        res = response.json()
+
+        # append frames
+        frames.extend(res['results'])
+
+        # need more?
+        if len(frames) < res['count']:
+            self._list_archive_frames(frames, observation_id, offset + limit, limit)
