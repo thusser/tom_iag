@@ -19,6 +19,7 @@ except (AttributeError, KeyError):
         'portal_url': 'http://observe.monet.uni-goettingen.de',
         'archive_url': 'http://archive.monet.uni-goettingen.de',
         'api_key': '',
+        'archive_api_key': ''
     }
 
 # Module specific settings.
@@ -688,7 +689,10 @@ class IAGFacility(BaseRoboticObservationFacility):
             return {}
 
     def archive_headers(self):
-        return self._portal_headers()
+        if SETTINGS.get('archive_api_key'):
+            return {'Authorization': 'Token {0}'.format(SETTINGS['archive_api_key'])}
+        else:
+            return {}
 
     def archive_frames(self, observation_id, product_id=None):
         # todo save this key somewhere
