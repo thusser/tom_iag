@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "tom-iag"
+version = "0.2.0"
+description = "IAG telescopes facility module for the TOM Toolkit"
+authors = ["Tim-Oliver Husser <thusser@uni-goettingen.de>"]
+license = "MIT"
+readme = 'README.md'
+repository = 'https://github.com/thusser/tom_iag'
+
+[tool.poetry.dependencies]
+python = ">=3.7,<3.11"
+requests = "tomtoolkit>=2.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
