@@ -123,6 +123,7 @@ class IAGBaseObservationForm(BaseRoboticObservationForm, IAGBaseForm):
     end = forms.CharField(widget=forms.TextInput(attrs={"type": "date"}))
     exposure_count = forms.IntegerField(min_value=1)
     exposure_time = forms.FloatField(min_value=0.1, widget=forms.TextInput(attrs={"placeholder": "Seconds"}))
+    repeat_duration = forms.FloatField(required=False, label="Repeat duration [s]")
     max_airmass = forms.FloatField(initial=2)
     min_lunar_distance = forms.IntegerField(min_value=0, label="Minimum Lunar Distance", required=False)
     observation_mode = forms.ChoiceField(choices=[("NORMAL", "Normal")])
@@ -157,6 +158,10 @@ class IAGBaseObservationForm(BaseRoboticObservationForm, IAGBaseForm):
             Div(
                 Div("max_airmass", css_class="col"),
                 Div("min_lunar_distance", css_class="col"),
+                css_class="form-row",
+            ),
+            Div(
+                Div("repeat_duration", css_class="col"),
                 css_class="form-row",
             ),
         )
@@ -258,8 +263,9 @@ class IAGBaseObservationForm(BaseRoboticObservationForm, IAGBaseForm):
         return guiding_config
 
     def _build_configuration(self):
-        return {
-            "type": self.instrument_to_type(self.cleaned_data["instrument_type"]),
+        # build config
+        cfg = {
+            "type": "EXPOSE",
             "instrument_type": self.cleaned_data["instrument_type"],
             "target": self._build_target_fields(),
             "instrument_configs": self._build_instrument_config(),
@@ -270,6 +276,14 @@ class IAGBaseObservationForm(BaseRoboticObservationForm, IAGBaseForm):
                 "min_lunar_distance": self.cleaned_data["min_lunar_distance"],
             },
         }
+
+        # EXPOSE or REPEAT_EXPOSE?
+        if self.cleaned_data["repeat_duration"]:
+            cfg["type"] = "REPEAT_EXPOSE"
+            cfg["repeat_duration"] = self.cleaned_data["repeat_duration"]
+
+        # return it
+        return cfg
 
     def _build_location(self):
         return {"telescope_class": get_instruments()[self.cleaned_data["instrument_type"]]["class"]}
@@ -365,6 +379,11 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
             Div(
                 Div("exposure_count", css_class="col"),
                 Div("exposure_time", css_class="col"),
+                css_class="form-row",
+            ),
+            Div(
+                Div("repeat_duration", css_class="col"),
+                Div(None, css_class="col"),
                 css_class="form-row",
             ),
             Div(
