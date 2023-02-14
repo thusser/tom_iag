@@ -9,7 +9,6 @@ repository = 'https://github.com/thusser/tom_iag'
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.11"
-requests = "tomtoolkit>=2.0"
 
 [tool.poetry.dev-dependencies]
 
