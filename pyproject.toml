@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tom-iag"
-version = "0.2.9"
+version = "0.2.10"
 description = "IAG telescopes facility module for the TOM Toolkit"
 authors = ["Tim-Oliver Husser <thusser@uni-goettingen.de>"]
 license = "MIT"
