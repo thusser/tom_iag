@@ -419,7 +419,7 @@ class IAGImagingObservationForm(IAGBaseObservationForm):
 
 
 class MonetSouthImagingObservationForm(IAGImagingObservationForm):
-    INSTRUMENT = "1M2 FLI230"
+    INSTRUMENT = "1M2 MONETS FLI230"
 
     @property
     def _instrument(self):
@@ -441,7 +441,7 @@ class MonetNorthImagingObservationForm(IAGImagingObservationForm):
 
 
 class IAG50ImagingObservationForm(IAGImagingObservationForm):
-    INSTRUMENT = "0M5 SBIG6303E"
+    INSTRUMENT = "0M5 IAG50CM SBIG6303E"
 
     @property
     def _instrument(self):
